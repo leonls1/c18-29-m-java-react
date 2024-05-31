@@ -18,6 +18,7 @@ Tecnologias utilizadas
         Google meet
 
 Integrantes
+
     Abril Iparraguire       Rol: Diseño             Linkedin:   https://www.linkedin.com/in/abril-iparraguirre-8a1667282
 
     Albany Perdomo          Rol: QA                 Linkedin:   https://www.linkedin.com/in/albany-perdomo-830400102/
