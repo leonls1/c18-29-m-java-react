@@ -2,15 +2,20 @@ Proyecto : Zoocial
     Una app del rubro PET TECH para que tu mascota pueda encontrar amigos con quien jugar
 
 Tecnologias utilizadas
+
     FrontEnd
-        React        
+        React    
+        
     BackEnd
         Java con Spring
+        
     Diseño
         Figma
         Canva
+        
     QA
         Postman
+        
     Organizacion
         WhatsApp
         Slack
