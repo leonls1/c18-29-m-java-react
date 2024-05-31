@@ -1,5 +1,6 @@
 package com.desarrollo.adopcion.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -8,8 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.desarrollo.adopcion.exception.UserException;
-import com.desarrollo.adopcion.modelo.Estado;
-import com.desarrollo.adopcion.modelo.Role;
 import com.desarrollo.adopcion.modelo.User;
 import com.desarrollo.adopcion.repository.IUserRepository;
 import com.desarrollo.adopcion.Correo.ClaveResetToken;
@@ -37,9 +36,21 @@ public class UserService implements IUserService {
 			throw new UserException(user.getCorreo()+" ya está registrado!");
 		}
 		user.setClave(passwordEncoder.encode(user.getClave()));
-		/*user.setEstado(Estado.ACTIVO);
-		user.setRole(Role.USER);*/
+		user.setCreadoEn(LocalDateTime.now());
 		return userRepository.save(user);
+	}
+	
+	public User updateUser(String correo, User user) {
+		if (userRepository.existsByCorreo(correo)) {
+			System.out.println("Consiguio al usuario");
+			User u = userRepository.findByCorreo(correo).orElse(null);
+			u.setNombre(user.getNombre());
+			u.setApellido(user.getApellido());
+			u.setCorreo(user.getCorreo());
+			return userRepository.save(u);
+		}
+		System.out.println("NO consiguió al usuario");
+		return null;
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package com.desarrollo.adopcion.modelo;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -47,7 +47,7 @@ public class User implements UserDetails{
 	
 	private String clave;
 	
-	private Date creadoEn;
+	private LocalDateTime creadoEn;
 	
 	@Enumerated(EnumType.STRING)
 	@Builder.Default

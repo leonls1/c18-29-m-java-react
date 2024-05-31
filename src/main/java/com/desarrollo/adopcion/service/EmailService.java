@@ -20,8 +20,7 @@ public class EmailService {
         
 		MimeMessage message = mailSender.createMimeMessage();
 		
-		
-		message.setFrom(new InternetAddress("reynaldojblancom@gmail.com"));
+		message.setFrom(new InternetAddress("zoocial@demomailtrap.com"));
 	    message.setRecipients(MimeMessage.RecipientType.TO, "rey.blanco@yahoo.com");
 	    message.setSubject("Zoocial, Restablecer la contraseña ");
 

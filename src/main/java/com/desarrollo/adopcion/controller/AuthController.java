@@ -1,6 +1,5 @@
 package com.desarrollo.adopcion.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +16,6 @@ import com.desarrollo.adopcion.Correo.ForgotPasswordRequest;
 import com.desarrollo.adopcion.exception.UserException;
 import com.desarrollo.adopcion.request.LoginRequest;
 import com.desarrollo.adopcion.security.jwt.JwtUtils;
-import com.desarrollo.adopcion.service.IUserService;
 import com.desarrollo.adopcion.service.UserService;
 import com.desarrollo.adopcion.modelo.User;
 
