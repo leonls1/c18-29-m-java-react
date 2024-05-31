@@ -2,6 +2,7 @@ package com.desarrollo.adopcion.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,8 @@ public class PetService {
         return iPetRepository.save(pet);
     }
 
-    public Pet getPetById(Long id) throws ResourceNotFoundException {
-        Pet pet = iPetRepository.findById(id).orElse(null);
+    public Optional<Pet> getPetById(Long id) throws ResourceNotFoundException {
+        Optional<Pet> pet = iPetRepository.findById(id);
         if (pet == null) {
             throw new ResourceNotFoundException("Pet with id: " + id + "not found");
         }
@@ -34,8 +35,8 @@ public class PetService {
 
     }
 
-    public Pet getPetByName(String name) throws ResourceNotFoundException{
-       Pet pet = iPetRepository.findByNombre(name).orElse(null);
+    public Optional<Pet> getPetByName(String name) throws ResourceNotFoundException{
+       Optional<Pet> pet = iPetRepository.findByNombre(name);
         if (pet== null) {
             throw new ResourceNotFoundException("Pet not found with id: " + name);
         }

@@ -1,6 +1,7 @@
 package com.desarrollo.adopcion.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,32 +37,28 @@ public class PetController {
     	}
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getPetById(@PathVariable Long id) {
-    	try {
-    		Pet pet = petService.getPetById(id);
-    		return ResponseEntity.ok(pet);
-    	}catch(ResourceNotFoundException ex){
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-		}catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error recuperando la mascota");
-		}
-    }
-    
-    @GetMapping("/{nombre}")
-    public ResponseEntity<?> getPetByName(@PathVariable String nombre) {
-    	try {
-    		Pet pet = petService.getPetByName(nombre);
-    		return ResponseEntity.ok(pet);
-    	}catch(ResourceNotFoundException ex){
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-		}catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error recuperando la mascota");
-		}
-    }
-    
     @GetMapping
-    public ResponseEntity<List<Pet>> getAllPets(@RequestParam(required = false) String name) throws ResourceNotFoundException {
+    public ResponseEntity<?> getPetById(@RequestParam(required = false) Long id,
+    									@RequestParam(required = false) String nombre) {    	
+    	try {
+    		if(id!=null) {
+    			Optional<Pet> pet = petService.getPetById(id);
+    			return ResponseEntity.ok(pet);
+    		}else if(nombre != null){
+    			Optional<Pet> pet = petService.getPetByName(nombre);
+    			return ResponseEntity.ok(pet);
+    		}
+    		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Debe pasar un parametro");
+    	}catch(ResourceNotFoundException ex){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error recuperando la mascota");
+		}
+    }
+    
+    
+    @GetMapping("/todas")
+    public ResponseEntity<List<Pet>> getAllPets()  {
         return new ResponseEntity<>(petService.getAllPets(), HttpStatus.FOUND);
     }
 
