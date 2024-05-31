@@ -49,7 +49,6 @@ public class UserService implements IUserService {
 			u.setCorreo(user.getCorreo());
 			return userRepository.save(u);
 		}
-		System.out.println("NO consiguió al usuario");
 		return null;
 	}
 
@@ -70,18 +69,19 @@ public class UserService implements IUserService {
 
 	@Override
 	public User getUserByCorreo(String correo) {
-		System.out.println("Correo "+correo);
 		return userRepository.findByCorreo(correo).orElseThrow();
 	}
 	
 	public void procesoOlvidoClave(String correo) throws MessagingException {
 
 		if (userRepository.existsByCorreo(correo)) {
+			System.out.println("procesoOlvidoClave ");
 			User user = userRepository.findByCorreo(correo).orElseThrow();
 			String token = UUID.randomUUID().toString();
 			ClaveResetToken claveResetToken = new ClaveResetToken(token, user);
 			tokenRepository.save(claveResetToken);
 			emailService.sendEmail(correo, token);
+			emailService.sendCorreo();
 		}
 		
 	}

@@ -110,6 +110,13 @@
 	        <artifactId>mockito-junit-jupiter</artifactId>
 	        <scope>test</scope>
 	    </dependency>
+	    <!-- https://mvnrepository.com/artifact/com.mailersend/java-sdk -->
+		<dependency>
+		    <groupId>com.mailersend</groupId>
+		    <artifactId>java-sdk</artifactId>
+		    <version>1.0.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

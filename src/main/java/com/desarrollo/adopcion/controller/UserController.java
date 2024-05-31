@@ -52,7 +52,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/actualizar/{correo}")
-	public ResponseEntity<?> actualizaUsuario(@Valid @PathVariable("correo") String correo, @RequestBody User user) {
+	public ResponseEntity<String> actualizaUsuario(@Valid @PathVariable("correo") String correo, @RequestBody User user) {
 		try {
 			userService.updateUser(correo, user);
 			return ResponseEntity.ok("Usuario actualizado con exito");
