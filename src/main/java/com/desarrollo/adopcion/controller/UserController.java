@@ -21,6 +21,8 @@ import com.desarrollo.adopcion.service.UserService;
 import jakarta.validation.Valid;
 
 import com.desarrollo.adopcion.exception.UserException;
+import com.desarrollo.adopcion.request.MessageRequest;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge=3600)
@@ -74,5 +76,13 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error eliminando el usuario");
 		}
 	}
+        
+        @Autowired
+        private IMessageRepository 
+        
+        @PostMapping("/send")
+        public ResponseEntity<String> sendMessage(@RequestBody MessageRequest request){
+            
+        }
 	
 }
