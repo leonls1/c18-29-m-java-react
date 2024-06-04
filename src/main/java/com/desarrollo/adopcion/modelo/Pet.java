@@ -2,6 +2,7 @@ package com.desarrollo.adopcion.modelo;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -54,4 +55,5 @@ public class Pet {
 	@OneToMany(mappedBy = "pet2", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Coincidencia> match2;
 
+	
 }

@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,15 +20,15 @@ import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(prePostEnabled=true)
 public class WebSecurityConfig {
 	
-	private final JwtAuthEntryPoint jwtAuthEntryPoint;
 	private final UserDetailService userDetailService;
+	private final JwtAuthEntryPoint jwtAuthEntryPoint;
 
 	@Bean
-    JwtAuthTokenFilter authenticationTokenFilter() {
+    JwtAuthTokenFilter authenticationTokenFilter() { 
 		return new JwtAuthTokenFilter();
 	}
 
@@ -60,8 +60,8 @@ public class WebSecurityConfig {
     	.authorizeHttpRequests(auth -> auth
     			.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
     			.requestMatchers("/","/auth/**").permitAll()
-    			.anyRequest().authenticated()
-    			);
+    			.anyRequest().authenticated());
+    			
     	http.authenticationProvider(authenticationProvider());
     	http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     	return http.build();

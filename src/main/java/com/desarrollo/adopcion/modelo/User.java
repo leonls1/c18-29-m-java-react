@@ -3,6 +3,7 @@ package com.desarrollo.adopcion.modelo;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,11 +21,9 @@ import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class User implements UserDetails{
@@ -58,7 +57,7 @@ public class User implements UserDetails{
 	private Role role = Role.USER;
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Pet> pet;
+	private List<Pet> pets;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -93,6 +92,18 @@ public class User implements UserDetails{
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+	
+	public User() {
+		this.pets = new ArrayList<>();
+	}
+	
+	public void addPet(Pet pet) {
+		if(this.pets == null) {
+			this.pets = new ArrayList<>();
+		}
+		pets.add(pet);
+		pet.setUser(this);
 	}
 
 }

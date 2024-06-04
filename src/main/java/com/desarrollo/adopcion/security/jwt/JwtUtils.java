@@ -30,7 +30,6 @@ public class JwtUtils {
 	@Value("${auth.token.expirationInMills}")
 	private int jwtExpirationMs;
 	
-	
 	public String generateJwtTokenForUser(Authentication authentication) {
 		UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 		String role = userPrincipal.getAuthorities().toString();

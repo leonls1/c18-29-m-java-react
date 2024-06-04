@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.desarrollo.adopcion.exception.ResourceAlreadyExistsException;
 import com.desarrollo.adopcion.exception.ResourceNotFoundException;
 import com.desarrollo.adopcion.modelo.Pet;
+import com.desarrollo.adopcion.modelo.User;
 import com.desarrollo.adopcion.repository.IPetRepository;
 
 @Service
@@ -18,11 +19,16 @@ public class PetService {
 	@Autowired
     private IPetRepository iPetRepository;
 	
-    public Pet createPet(Pet pet) throws ResourceNotFoundException, ResourceAlreadyExistsException {
+	@Autowired
+	private UserService userService;
+	
+    public Pet createPet(Pet pet, String userId) throws ResourceNotFoundException, ResourceAlreadyExistsException {
         if(iPetRepository.existsByNombre(pet.getNombre())){
             throw new ResourceAlreadyExistsException("A Pet already exists in the database");
         }
         pet.setCreadoEn(LocalDateTime.now());
+        User user = userService.getUserByCorreo(userId);
+        user.addPet(pet);
         return iPetRepository.save(pet);
     }
 

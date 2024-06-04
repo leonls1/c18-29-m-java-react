@@ -16,5 +16,7 @@ public class AuthResponse {
     private String correo;
 	@NotBlank
     private String token;
+	@NotBlank
+	private String role;
 
 }

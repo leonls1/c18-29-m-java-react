@@ -1,11 +1,18 @@
 package com.desarrollo.adopcion.controller;
 
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,22 +22,65 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.desarrollo.adopcion.exception.ResourceNotFoundException;
 import com.desarrollo.adopcion.modelo.Pet;
+import com.desarrollo.adopcion.modelo.PetPhotos;
+import com.desarrollo.adopcion.repository.IPetPhotoRepository;
 import com.desarrollo.adopcion.service.PetService;
 
 @RestController
+@CrossOrigin(origins="*", maxAge=3600)
 @RequestMapping("/api/pets")
 public class PetController {
 	
 	@Autowired
     public PetService petService;
+	@Autowired
+	public IPetPhotoRepository petFotoRepository;
 
-    @PostMapping("/crear")
-    public ResponseEntity<String> createPet(@RequestBody Pet pet) {
+    @PostMapping("/crear/{userId}")
+    public ResponseEntity<String> createPet(@PathVariable("userId") String userId, 
+    		@RequestParam("nombre") String nombre,
+            @RequestParam("especie") String especie,
+            @RequestParam("raza") String raza,
+            @RequestParam("edad") int edad,
+            @RequestParam("genero") String genero,
+            @RequestParam("tamanio") String tamanio,
+            @RequestParam("descripcion") String descripcion,
+            @RequestParam("photos") List<MultipartFile> photos) {
     	try {
-    		petService.createPet(pet);
+    		Pet pet = new Pet();
+    		
+    		pet.setNombre(nombre);
+    		pet.setEspecie(especie);
+    		pet.setRaza(raza);
+    		pet.setEdad(edad);
+    		pet.setGenero(genero);
+    		pet.setTamanio(tamanio);
+    		pet.setDescripcion(descripcion);
+    		pet.setCreadoEn(LocalDateTime.now());
+    		
+    		Pet petsaved = petService.createPet(pet, userId);
+    		
+            for (MultipartFile photo : photos) {
+            	PetPhotos foto = new PetPhotos();
+            	if(!photo.isEmpty()) {
+        			byte[] fotoBytes;
+        			try {
+        				fotoBytes = photo.getBytes();
+        				Blob fotoBlob = new SerialBlob(fotoBytes);
+        				foto.setPhoto(fotoBlob);
+        			} catch (IOException | SQLException e) {
+        				e.printStackTrace();
+        			}
+        		}
+            	foto.setPet(petsaved);
+            	foto.setSubidaEn(LocalDateTime.now());
+            	petFotoRepository.save(foto);
+            }
+    		
     		return ResponseEntity.ok("Mascota creada con exito");    		
     	}catch(Exception e) {
     		return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());

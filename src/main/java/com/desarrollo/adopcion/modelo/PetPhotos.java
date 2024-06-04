@@ -1,16 +1,15 @@
 package com.desarrollo.adopcion.modelo;
 
-import java.time.LocalDate;
-import java.util.Date;
+import java.sql.Blob;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,12 +25,12 @@ public class PetPhotos {
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name="pet_id")
+	@JoinColumn(name="pet_id") 
 	private Pet pet;
 	
-	private String urlphoto;
+	@Lob
+	private Blob photo;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date subidaEn;
+	private LocalDateTime subidaEn;
 
 }
