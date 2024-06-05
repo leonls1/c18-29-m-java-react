@@ -25,7 +25,7 @@ public class PetPhotos {
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name="pet_id") 
+	@JoinColumn(name="pet_id", nullable = false) 
 	private Pet pet;
 	
 	@Lob

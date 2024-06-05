@@ -1,5 +1,6 @@
 package com.desarrollo.adopcion.modelo;
 
+import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -47,6 +48,10 @@ public class User implements UserDetails{
 	private String clave;
 	
 	private LocalDateTime creadoEn;
+	
+	private String ubicacion;
+	
+	private Blob fotoPerfil;
 	
 	@Enumerated(EnumType.STRING)
 	@Builder.Default

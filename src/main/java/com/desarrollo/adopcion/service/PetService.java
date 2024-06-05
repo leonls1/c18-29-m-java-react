@@ -23,11 +23,16 @@ public class PetService {
 	private UserService userService;
 	
     public Pet createPet(Pet pet, String userId) throws ResourceNotFoundException, ResourceAlreadyExistsException {
-        if(iPetRepository.existsByNombre(pet.getNombre())){
-            throw new ResourceAlreadyExistsException("A Pet already exists in the database");
-        }
+    	
+    	User user = userService.getUserByCorreo(userId);
+    	System.out.println("Llego al servicio");
+    	/*
+    	Optional<Pet> mascota = iPetRepository.findByNombreAndUser(pet.getNombre(), user);
+    	System.out.println("Encontro el nombre de la mascota con el mismo usuario"+mascota.get().getNombre()+" "+mascota.get().getUser().getNombre());
+        if(mascota != null){
+            throw new ResourceAlreadyExistsException("Tienes una mascota con el mismo nombre");
+        }*/
         pet.setCreadoEn(LocalDateTime.now());
-        User user = userService.getUserByCorreo(userId);
         user.addPet(pet);
         return iPetRepository.save(pet);
     }
@@ -48,7 +53,7 @@ public class PetService {
         }
         return pet;
     }
-
+    
     public List<Pet> getAllPets() {
         return  iPetRepository.findAll();
     }

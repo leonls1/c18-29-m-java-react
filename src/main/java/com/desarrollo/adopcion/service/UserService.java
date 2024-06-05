@@ -42,7 +42,6 @@ public class UserService implements IUserService {
 	
 	public User updateUser(String correo, User user) {
 		if (userRepository.existsByCorreo(correo)) {
-			System.out.println("Consiguio al usuario");
 			User u = userRepository.findByCorreo(correo).orElse(null);
 			u.setNombre(user.getNombre());
 			u.setApellido(user.getApellido());
@@ -75,7 +74,6 @@ public class UserService implements IUserService {
 	public void procesoOlvidoClave(String correo) throws MessagingException {
 
 		if (userRepository.existsByCorreo(correo)) {
-			System.out.println("procesoOlvidoClave ");
 			User user = userRepository.findByCorreo(correo).orElseThrow();
 			String token = UUID.randomUUID().toString();
 			ClaveResetToken claveResetToken = new ClaveResetToken(token, user);
@@ -83,8 +81,6 @@ public class UserService implements IUserService {
 			emailService.sendEmail(correo, token);
 			emailService.sendCorreo();
 		}
-		
 	}
-
 
 }
