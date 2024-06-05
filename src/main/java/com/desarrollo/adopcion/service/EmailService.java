@@ -47,10 +47,33 @@ public class EmailService {
         message.setRecipients(MimeMessage.RecipientType.TO, toEmail);
         
         message.setSubject("Mensaje del usuario "+ fromUser + " dueño de la mascota "+ fromPet);
-        message.setContent(content,"text/html; charset=utf-8");
-          
+        message.setContent(content,"text/html; charset=utf-8");   
+        
+        
+        mailSender.send(message);        
+    }
+    
+     //si le doy like y el otro no me dio like antes llamo al metodo de arriba
+    public void sendLikeNotification(){
+        //creo el mmimeMessage
+        //de quien
+        //para quien
+        //cual es el asunto
+        
+        //cargo el contenido
+        
+        //envio el mensaje
+    }
+    
+     //si le di like y el otro me dio like antes se crea el match
+    public void sendMatchNotification(){
         
     }
+    
+   
+   
+    
+    
 
     public void sendCorreo() {
 
