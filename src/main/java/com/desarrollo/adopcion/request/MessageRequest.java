@@ -7,7 +7,7 @@ import lombok.Data;
 public class MessageRequest {
     
     @NotBlank
-    private Long idSender;
+    private Long idPetSender;
 
     @NotBlank
     private String content;

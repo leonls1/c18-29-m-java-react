@@ -21,7 +21,15 @@ import com.desarrollo.adopcion.service.UserService;
 import jakarta.validation.Valid;
 
 import com.desarrollo.adopcion.exception.UserException;
+import com.desarrollo.adopcion.modelo.Coincidencia;
+import com.desarrollo.adopcion.modelo.Message;
+import com.desarrollo.adopcion.modelo.Pet;
+import com.desarrollo.adopcion.repository.ICoincidenciaRepository;
+import com.desarrollo.adopcion.repository.IMessageRepository;
+import com.desarrollo.adopcion.repository.IPetRepository;
 import com.desarrollo.adopcion.request.MessageRequest;
+import java.util.Date;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
@@ -34,6 +42,16 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+        
+         @Autowired
+        private IMessageRepository messageRepository;
+         
+        @Autowired
+        private ICoincidenciaRepository conincidenciaRepository; 
+        
+        @Autowired
+        private IPetRepository petRepository;
+         
 	
 	
 	@GetMapping("/todos")
@@ -77,12 +95,16 @@ public class UserController {
 		}
 	}
         
-        @Autowired
-        private IMessageRepository 
+       
         
         @PostMapping("/send")
         public ResponseEntity<String> sendMessage(@RequestBody MessageRequest request){
             
+            if(userService.sendMessage(request)){
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body("message sended");
+            }else{
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Error sending the message");
+            }           
         }
 	
 }
