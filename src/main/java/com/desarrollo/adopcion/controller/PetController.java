@@ -12,7 +12,6 @@ import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,12 +28,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.desarrollo.adopcion.DTO.PetDto;
 import com.desarrollo.adopcion.exception.ResourceNotFoundException;
+import com.desarrollo.adopcion.modelo.IntencionLike;
 import com.desarrollo.adopcion.modelo.Pet;
 import com.desarrollo.adopcion.modelo.PetPhotos;
 import com.desarrollo.adopcion.modelo.User;
+import com.desarrollo.adopcion.modelo.Coincidencia;
+import com.desarrollo.adopcion.repository.ICoincidenciaRepository;
+import com.desarrollo.adopcion.repository.ILikeIntentionRepository;
 import com.desarrollo.adopcion.repository.IPetPhotoRepository;
 import com.desarrollo.adopcion.repository.IPetRepository;
 import com.desarrollo.adopcion.repository.IUserRepository;
+import com.desarrollo.adopcion.request.LikeRequest;
+import com.desarrollo.adopcion.service.EmailService;
 import com.desarrollo.adopcion.service.PetService;
 
 @RestController
@@ -50,6 +55,13 @@ public class PetController {
 	public IPetPhotoRepository petFotoRepository;
 	@Autowired
 	public IUserRepository userRepository;
+	@Autowired
+	public ILikeIntentionRepository intentionRepository;
+	@Autowired
+	public ICoincidenciaRepository coincidenciaRepository;
+	@Autowired
+    private EmailService emailService;
+	
 
     @PostMapping("/crear/{userId}")
     public ResponseEntity<String> createPet(@PathVariable("userId") String userId, 
@@ -60,6 +72,7 @@ public class PetController {
             @RequestParam("genero") String genero,
             @RequestParam("tamanio") String tamanio,
             @RequestParam("descripcion") String descripcion,
+            @RequestParam("fotoPerfil") MultipartFile fotoPerfil, 
             @RequestParam("photos") List<MultipartFile> photos) {
     	try {
     		Pet pet = new Pet();
@@ -71,6 +84,16 @@ public class PetController {
     		pet.setGenero(genero);
     		pet.setTamanio(tamanio);
     		pet.setDescripcion(descripcion);
+    		if(!fotoPerfil.isEmpty()) {
+    			byte[] fotoBytes;
+    			try {
+    				fotoBytes = fotoPerfil.getBytes();
+    				Blob fotoBlob = new SerialBlob(fotoBytes);
+    				pet.setFotoPerfil(fotoBlob);
+    			} catch (IOException | SQLException e) {
+    				e.printStackTrace();
+    			}
+    		}
     		pet.setCreadoEn(LocalDateTime.now());
     		
     		System.out.println("Llego al controlador");
@@ -117,24 +140,37 @@ public class PetController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error recuperando la mascota");
 		}
     }
-    
-    
+     
     @GetMapping("/user")
     public ResponseEntity<List<PetDto>> getPetsByUser(Authentication authentication)  {
     	Optional<User> currentUser = userRepository.findByCorreo(authentication.getName());
     	List<Pet> pets = petRepository.findByUser(currentUser);
-    	List<PetDto> petDtos = pets.stream().map(this::convertToDto).collect(Collectors.toList());
+    	List<PetDto> petDtos = pets.stream().map(t -> {
+			try {
+				return convertToDto(t);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}).collect(Collectors.toList());
         return ResponseEntity.ok(petDtos);
     }
     
     @GetMapping("/todas")
-    public ResponseEntity<List<PetDto>> getAllPets()  {
+    public ResponseEntity<List<PetDto>> getAllPets() {
     	List<Pet> pets = petRepository.findAll();
-    	List<PetDto> petDtos = pets.stream().map(this::convertToDto).collect(Collectors.toList());
+    	List<PetDto> petDtos = pets.stream().map(t -> {
+			try {
+				return convertToDto(t);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}).collect(Collectors.toList());
         return ResponseEntity.ok(petDtos);
     }
     
-    private PetDto convertToDto(Pet pet) {
+    private PetDto convertToDto(Pet pet) throws SQLException {
         PetDto petDto = new PetDto();
         petDto.setId(pet.getId());
         petDto.setNombre(pet.getNombre());
@@ -144,6 +180,11 @@ public class PetController {
         petDto.setGenero(pet.getGenero());
         petDto.setTamanio(pet.getTamanio());
         petDto.setDescripcion(pet.getDescripcion());
+        
+        Blob fotoBlob = pet.getFotoPerfil();
+        if(fotoBlob != null) {
+        	petDto.setFotoPerfil(fotoBlob.getBytes(1, (int) fotoBlob.length()));
+        }
         petDto.setPhotos(pet.getPhotos().stream()
                              .map(foto -> {
                          		try {
@@ -173,6 +214,43 @@ public class PetController {
     	
     }
      */
+    
+    @PostMapping("/likes")
+    public ResponseEntity<?> likePet(@RequestBody LikeRequest request, Authentication authentication) throws ResourceNotFoundException {
+    	System.out.println("Datos Recibidos "+request.getPetId()+" "+authentication.getName());
+    	User currentUser = userRepository.findByCorreo(authentication.getName()).orElseThrow(); // Capturo usuario
+        Pet fromPet = currentUser.getPets().get(0); // Capturo las mascotas del usuario que dió like
+        Pet toPet = petRepository.findById(request.getPetId()).orElseThrow(() -> new ResourceNotFoundException("Pet not found")); // Busco la mascota a la que se dió like 
+        User petOwner = toPet.getUser(); // Se busca propietario de mascota con like 
+
+        // Chequea si ya existe intencion de la otra mascota
+        Optional<IntencionLike> existingIntention = intentionRepository.findByFromPetAndToPet(toPet, fromPet);
+        if (existingIntention.isPresent()) {
+            // Crea el match en la base de datos
+            Coincidencia coincidencia = new Coincidencia();
+            coincidencia.setPet1(fromPet);
+            coincidencia.setPet2(toPet);
+            coincidencia.setFecha_match(LocalDateTime.now());
+            coincidenciaRepository.save(coincidencia);
+
+            // Elimina la intención existente
+            intentionRepository.delete(existingIntention.get());
+
+            // Envía notificacion a ambos usuarios
+            emailService.sendMatchNotification(currentUser.getCorreo(), petOwner.getCorreo(), fromPet, toPet);
+            return ResponseEntity.ok("Match created and notifications sent");
+        } else {
+            // Si no habia intención previa, se graba la intencion
+        	IntencionLike likeIntention = new IntencionLike(fromPet, toPet);
+            intentionRepository.save(likeIntention);
+
+            // Envía notificacion al propietario de la mascota 
+            emailService.sendLikeNotification(petOwner.getCorreo(), currentUser, fromPet, toPet);
+    	return ResponseEntity.ok("Like registrado y correo enviado");
+        }
+    }
+    
+    
     @PutMapping("/actualizar")
     public ResponseEntity<String> updatePet(@RequestBody Pet pet) {
         try {

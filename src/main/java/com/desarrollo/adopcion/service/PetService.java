@@ -25,7 +25,6 @@ public class PetService {
     public Pet createPet(Pet pet, String userId) throws ResourceNotFoundException, ResourceAlreadyExistsException {
     	
     	User user = userService.getUserByCorreo(userId);
-    	System.out.println("Llego al servicio");
     	/*
     	Optional<Pet> mascota = iPetRepository.findByNombreAndUser(pet.getNombre(), user);
     	System.out.println("Encontro el nombre de la mascota con el mismo usuario"+mascota.get().getNombre()+" "+mascota.get().getUser().getNombre());

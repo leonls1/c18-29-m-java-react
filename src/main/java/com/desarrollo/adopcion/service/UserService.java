@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.desarrollo.adopcion.exception.UserException;
+import com.desarrollo.adopcion.modelo.Estado;
+import com.desarrollo.adopcion.modelo.Role;
 import com.desarrollo.adopcion.modelo.User;
 import com.desarrollo.adopcion.repository.IUserRepository;
 import com.desarrollo.adopcion.Correo.ClaveResetToken;
@@ -35,6 +37,8 @@ public class UserService implements IUserService {
 		if(userRepository.existsByCorreo(user.getCorreo())) {
 			throw new UserException(user.getCorreo()+" ya está registrado!");
 		}
+		user.setEstado(Estado.ACTIVO);
+		user.setRole(Role.USER);
 		user.setClave(passwordEncoder.encode(user.getClave()));
 		user.setCreadoEn(LocalDateTime.now());
 		return userRepository.save(user);

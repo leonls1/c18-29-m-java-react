@@ -1,5 +1,6 @@
 package com.desarrollo.adopcion.DTO;
 
+import java.sql.Blob;
 import java.util.List;
 
 import com.desarrollo.adopcion.modelo.PetPhotos;
@@ -21,6 +22,7 @@ public class PetDto {
 	private String genero;
 	private String tamanio;
 	private String descripcion;
+	private byte[] fotoPerfil;
 	private List<byte[]> photos;
 	
 }
