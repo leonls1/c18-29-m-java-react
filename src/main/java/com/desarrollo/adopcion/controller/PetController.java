@@ -41,6 +41,7 @@ import com.desarrollo.adopcion.repository.IUserRepository;
 import com.desarrollo.adopcion.request.LikeRequest;
 import com.desarrollo.adopcion.service.EmailService;
 import com.desarrollo.adopcion.service.PetService;
+import com.desarrollo.adopcion.utils.Utilidades;
 
 @RestController
 @CrossOrigin(origins="*", maxAge=3600)
@@ -61,9 +62,11 @@ public class PetController {
 	public ICoincidenciaRepository coincidenciaRepository;
 	@Autowired
     private EmailService emailService;
-	
+	@Autowired
+	private Utilidades utilidades;
 
     @PostMapping("/crear/{userId}")
+
     public ResponseEntity<String> createPet(@PathVariable("userId") String userId, 
     		@RequestParam("nombre") String nombre,
             @RequestParam("especie") String especie,
@@ -96,7 +99,6 @@ public class PetController {
     		}
     		pet.setCreadoEn(LocalDateTime.now());
     		
-    		System.out.println("Llego al controlador");
     		Pet petsaved = petService.createPet(pet, userId);
     		
             for (MultipartFile photo : photos) {
@@ -147,7 +149,7 @@ public class PetController {
     	List<Pet> pets = petRepository.findByUser(currentUser);
     	List<PetDto> petDtos = pets.stream().map(t -> {
 			try {
-				return convertToDto(t);
+				return utilidades.convertToDto(t);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -161,7 +163,7 @@ public class PetController {
     	List<Pet> pets = petRepository.findAll();
     	List<PetDto> petDtos = pets.stream().map(t -> {
 			try {
-				return convertToDto(t);
+				return utilidades.convertToDto(t);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -170,33 +172,7 @@ public class PetController {
         return ResponseEntity.ok(petDtos);
     }
     
-    private PetDto convertToDto(Pet pet) throws SQLException {
-        PetDto petDto = new PetDto();
-        petDto.setId(pet.getId());
-        petDto.setNombre(pet.getNombre());
-        petDto.setEspecie(pet.getEspecie());
-        petDto.setRaza(pet.getRaza());
-        petDto.setEdad(pet.getEdad());
-        petDto.setGenero(pet.getGenero());
-        petDto.setTamanio(pet.getTamanio());
-        petDto.setDescripcion(pet.getDescripcion());
-        
-        Blob fotoBlob = pet.getFotoPerfil();
-        if(fotoBlob != null) {
-        	petDto.setFotoPerfil(fotoBlob.getBytes(1, (int) fotoBlob.length()));
-        }
-        petDto.setPhotos(pet.getPhotos().stream()
-                             .map(foto -> {
-                         		try {
-                        			Blob blob = foto.getPhoto();
-                        			return blob.getBytes(1, (int) blob.length());
-                        		}catch (SQLException e) {
-                        			throw new RuntimeException(e);
-                        		}
-                        	})
-                             .collect(Collectors.toList()));
-        return petDto;
-    }
+    
     
     /*
     @GetMapping("/photos/{petId}")

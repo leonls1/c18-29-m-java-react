@@ -50,6 +50,10 @@ public class UserService implements IUserService {
 			u.setNombre(user.getNombre());
 			u.setApellido(user.getApellido());
 			u.setCorreo(user.getCorreo());
+			u.setUbicacion(user.getUbicacion());
+			if(user.getFotoPerfil()!=null) {
+				u.setFotoPerfil(user.getFotoPerfil());
+			}
 			return userRepository.save(u);
 		}
 		return null;

@@ -70,7 +70,6 @@ public class EmailService {
 	}
 	
 	public void sendLikeNotification(String to, User fromUser, Pet fromPet, Pet toPet) {
-		System.out.println("Llega a notificar a "+to);
         try {
             MimeMessage message = mailSender.createMimeMessage();
 
@@ -96,7 +95,6 @@ public class EmailService {
     }
 
     public void sendMatchNotification(String to1, String to2, Pet fromPet, Pet toPet) {
-    	System.out.println("Llega a notificar a "+to1+" y "+to2);
         try {
             MimeMessage message1 = mailSender.createMimeMessage();
 
@@ -126,5 +124,25 @@ public class EmailService {
             e.printStackTrace();
         }
     }
+
+	public void sendSimpleMessage(String correo, String subject, String mensaje) {
+		try {
+            MimeMessage message = mailSender.createMimeMessage();
+
+            message.setFrom(new InternetAddress("MS_gjQsaN@trial-351ndgwyq0xlzqx8.mlsender.net"));
+            message.setRecipients(MimeMessage.RecipientType.TO, correo);
+            message.setSubject(subject);
+
+            String htmlContent = "<p>Hola,</p>" +
+                             "<p>"+mensaje + ".</p>";
+
+            message.setContent(htmlContent, "text/html; charset=utf-8");
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+		
+	}
 
 }

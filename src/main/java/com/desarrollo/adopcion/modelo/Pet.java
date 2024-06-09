@@ -57,5 +57,4 @@ public class Pet {
 	@OneToMany(mappedBy = "pet2", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Coincidencia> match2;
 
-	
 }

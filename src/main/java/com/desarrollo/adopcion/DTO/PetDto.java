@@ -1,9 +1,6 @@
 package com.desarrollo.adopcion.DTO;
 
-import java.sql.Blob;
 import java.util.List;
-
-import com.desarrollo.adopcion.modelo.PetPhotos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
