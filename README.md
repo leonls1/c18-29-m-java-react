@@ -28,15 +28,11 @@ https://www.linkedin.com/in/maria-eugenia-giraldo?utm_source=share&utm_campaign=
 
 # Tecnologías utilizadas:
 - # Backend
- ![Java](https://logowik.com/content/uploads/images/java1655.logowik.com.webp) 
- ![Springboot](https://www.yessinfotech.com/wp-content/uploads/2019/11/spring-boot-logo-300x158.png)
- ![Maven](https://logowik.com/content/uploads/images/maven-apache3537.jpg)
-
+![Java](https://img.icons8.com/?size=100&id=lTKW3iI3wIT0&format=png&color=000000) ![Springboot](https://img.icons8.com/?size=100&id=90519&format=png&color=000000)  ![Maven](https://img.icons8.com/?size=100&id=t5FJr3NzrPSm&format=png&color=000000)
 - # Frontend
-![React](https://trellat.es/wp-content/uploads/reactJS.png)
-
+![React](https://img.icons8.com/?size=100&id=asWSSTBrDlTW&format=png&color=000000)
 - # Base de datos
-![Mysql](https://pbs.twimg.com/profile_images/1255113654049128448/J5Yt92WW_400x400.png)
+![Mysql](https://img.icons8.com/?size=100&id=UFXRpPFebwa2&format=png&color=000000)
 - # Pruebas y Documentación de API:
-- ![RPostman](https://www.testautomatisierung.org/wp-content/uploads/postman.jpg)
+![Postman](https://img.icons8.com/?size=100&id=QEQQKirln6Tf&format=png&color=000000)
   
