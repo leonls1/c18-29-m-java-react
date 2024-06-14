@@ -8,9 +8,11 @@
 		<version>3.2.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	
 	<groupId>com.desarrollo.adopcion</groupId>
 	<artifactId>NoCountryAdopcion</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>NoCountryAdopcion</name>
 	<description>Desarrollo de web para adopcion de mascotas en Spring Boot &amp; React</description>
 	<properties>
