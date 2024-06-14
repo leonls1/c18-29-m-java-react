@@ -104,13 +104,6 @@ public class UserController {
 		}
 	}
         
-        @Autowired
-        private IMessageRepository 
-        
-        @PostMapping("/send")
-        public ResponseEntity<String> sendMessage(@RequestBody MessageRequest request){
-            
-        }
 	
 	private UserDto convertToDto(User user) throws SQLException {
         UserDto userDto = new UserDto();
