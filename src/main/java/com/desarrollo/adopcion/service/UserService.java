@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.desarrollo.adopcion.exception.UserException;
+import com.desarrollo.adopcion.modelo.Estado;
+import com.desarrollo.adopcion.modelo.Role;
 import com.desarrollo.adopcion.modelo.User;
 import com.desarrollo.adopcion.repository.IUserRepository;
 import com.desarrollo.adopcion.Correo.ClaveResetToken;
@@ -35,6 +37,8 @@ public class UserService implements IUserService {
 		if(userRepository.existsByCorreo(user.getCorreo())) {
 			throw new UserException(user.getCorreo()+" ya está registrado!");
 		}
+		user.setEstado(Estado.ACTIVO);
+		user.setRole(Role.USER);
 		user.setClave(passwordEncoder.encode(user.getClave()));
 		user.setCreadoEn(LocalDateTime.now());
 		return userRepository.save(user);
@@ -42,11 +46,14 @@ public class UserService implements IUserService {
 	
 	public User updateUser(String correo, User user) {
 		if (userRepository.existsByCorreo(correo)) {
-			System.out.println("Consiguio al usuario");
 			User u = userRepository.findByCorreo(correo).orElse(null);
 			u.setNombre(user.getNombre());
 			u.setApellido(user.getApellido());
 			u.setCorreo(user.getCorreo());
+			u.setUbicacion(user.getUbicacion());
+			if(user.getFotoPerfil()!=null) {
+				u.setFotoPerfil(user.getFotoPerfil());
+			}
 			return userRepository.save(u);
 		}
 		return null;
@@ -75,7 +82,6 @@ public class UserService implements IUserService {
 	public void procesoOlvidoClave(String correo) throws MessagingException {
 
 		if (userRepository.existsByCorreo(correo)) {
-			System.out.println("procesoOlvidoClave ");
 			User user = userRepository.findByCorreo(correo).orElseThrow();
 			String token = UUID.randomUUID().toString();
 			ClaveResetToken claveResetToken = new ClaveResetToken(token, user);
@@ -83,8 +89,6 @@ public class UserService implements IUserService {
 			emailService.sendEmail(correo, token);
 			emailService.sendCorreo();
 		}
-		
 	}
-
 
 }

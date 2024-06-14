@@ -1,5 +1,6 @@
 package com.desarrollo.adopcion.modelo;
 
+import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -44,6 +45,8 @@ public class Pet {
 	private String descripcion;
 	
 	private LocalDateTime creadoEn;
+	
+	private Blob fotoPerfil;
 	
 	@OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<PetPhotos> photos;

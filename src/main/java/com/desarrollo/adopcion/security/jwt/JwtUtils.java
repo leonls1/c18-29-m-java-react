@@ -5,8 +5,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
-import com.desarrollo.adopcion.modelo.Role;
 
 import java.security.Key;
 
@@ -29,7 +25,6 @@ public class JwtUtils {
 	
 	@Value("${auth.token.expirationInMills}")
 	private int jwtExpirationMs;
-	
 	
 	public String generateJwtTokenForUser(Authentication authentication) {
 		UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();

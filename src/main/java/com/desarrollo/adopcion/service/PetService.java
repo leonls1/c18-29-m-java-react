@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.desarrollo.adopcion.exception.ResourceAlreadyExistsException;
 import com.desarrollo.adopcion.exception.ResourceNotFoundException;
 import com.desarrollo.adopcion.modelo.Pet;
+import com.desarrollo.adopcion.modelo.User;
 import com.desarrollo.adopcion.repository.IPetRepository;
 
 @Service
@@ -18,11 +19,20 @@ public class PetService {
 	@Autowired
     private IPetRepository iPetRepository;
 	
-    public Pet createPet(Pet pet) throws ResourceNotFoundException, ResourceAlreadyExistsException {
-        if(iPetRepository.existsByNombre(pet.getNombre())){
-            throw new ResourceAlreadyExistsException("A Pet already exists in the database");
-        }
+	@Autowired
+	private UserService userService;
+	
+    public Pet createPet(Pet pet, String userId) throws ResourceNotFoundException, ResourceAlreadyExistsException {
+    	
+    	User user = userService.getUserByCorreo(userId);
+    	/*
+    	Optional<Pet> mascota = iPetRepository.findByNombreAndUser(pet.getNombre(), user);
+    	System.out.println("Encontro el nombre de la mascota con el mismo usuario"+mascota.get().getNombre()+" "+mascota.get().getUser().getNombre());
+        if(mascota != null){
+            throw new ResourceAlreadyExistsException("Tienes una mascota con el mismo nombre");
+        }*/
         pet.setCreadoEn(LocalDateTime.now());
+        user.addPet(pet);
         return iPetRepository.save(pet);
     }
 
@@ -42,7 +52,7 @@ public class PetService {
         }
         return pet;
     }
-
+    
     public List<Pet> getAllPets() {
         return  iPetRepository.findAll();
     }
