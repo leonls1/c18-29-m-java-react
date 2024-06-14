@@ -1,5 +1,6 @@
 # ✨ Zoocial: Una Aplicación Innovadora para Conectar Mascotas y sus Dueños
 
+<<<<<<< HEAD
 Bienvenido a Zoocial, la aplicación diseñada para facilitar la conexión entre mascotas y sus dueños, similar a Tinder pero orientada a nuestros amigos peludos. Con Zoocial, puedes crear un perfil detallado para tu mascota, buscar otras mascotas en tu área, enviar mensajes y organizar encuentros para que tus mascotas socialicen y hagan nuevos amigos.
 
 ## ¿Qué Hace que Zoocial sea Especial?
